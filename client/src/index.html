@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private Vault</title><link rel="stylesheet" href="/style.css"><script type="module" src="/app.mjs"></script></head>
+<body><main>
+<header><h1>Private Vault</h1><p>Passwords stay encrypted until you unlock your vault.</p></header>
+<p id="status" role="status" aria-live="polite">Checking session…</p>
+<section id="signed-out" hidden><h2>Sign in</h2><button id="login">Sign in with a passkey</button>
+<details><summary>First-time enrollment</summary><form id="enroll-form"><label>Enrollment token<input id="token" type="password" autocomplete="off" required maxlength="128"></label><button>Enroll passkey</button></form></details></section>
+<section id="signed-in" hidden><nav><button id="lock">Lock vault</button><button id="logout">Sign out</button><button id="add-passkey">Add another passkey</button></nav>
+<form id="unlock-form"><h2 id="unlock-heading">Unlock vault</h2><label>Master password<input id="master" type="password" autocomplete="off" required maxlength="1024"></label><label id="confirm-label" hidden>Confirm master password<input id="confirm" type="password" autocomplete="off" maxlength="1024"></label><button id="unlock-submit">Unlock</button><p>The master password is separate from your passkey and never leaves this browser. It cannot be reset to recover your entries.</p></form>
+<section id="unlocked" hidden><h2>Your passwords</h2><p>The vault locks after five minutes, when this tab is hidden, or when you leave this page.</p><button id="refresh">Refresh entries</button><ul id="entries"></ul>
+<form id="entry-form"><h2 id="editor-title">New entry</h2><label>Title<input name="title" required maxlength="256" autocomplete="off"></label><label>Username<input name="username" maxlength="1024" autocomplete="off"></label><label>Password<input name="password" type="password" maxlength="4096" autocomplete="off"></label><button id="generate" type="button">Generate a 24-character password</button><button id="reveal" type="button">Show password</button><label>URL<input name="url" maxlength="2048" autocomplete="off"></label><label>Notes<textarea name="notes" maxlength="8192"></textarea></label><button>Save entry</button><button id="cancel" type="button">Clear editor</button></form>
+</section></section></main></body></html>

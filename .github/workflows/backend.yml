@@ -1,0 +1,58 @@
+name: Backend checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # Node.js 24
+      - name: Client cryptography tests and build
+        working-directory: client
+        run: |
+          npm ci --ignore-scripts
+          npm audit --audit-level=low
+          npm test
+          npm run build
+      - name: Install Rust tools
+        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy --no-self-update
+      - name: Verify vendored source integrity
+        run: python3 scripts/verify_vendor.py
+      - name: Check disabled MySQL compatibility patch
+        run: cargo +stable check --locked --features sqlx/mysql --lib
+      - name: Formatting
+        run: cargo +stable fmt --all -- --check
+      - name: Lint
+        run: cargo +stable clippy --locked --all-targets -- -D warnings
+      - name: Release build
+        run: cargo +stable build --locked --release
+      - name: Rust security and integration tests
+        run: cargo +stable test --locked --all-targets
+      - name: Install age for encrypted recovery tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes age
+      - name: Backup and recovery tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Dependency advisories
+        run: |
+          cargo +stable install cargo-audit --locked
+          cargo +stable audit
+
+  container-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # Node.js 24
+      - name: Install recovery tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes age
+      - name: Build browser client
+        working-directory: client
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+      - name: Encrypted backup and disposable container recovery
+        run: python3 scripts/validate_containers.py --recovery --resilience

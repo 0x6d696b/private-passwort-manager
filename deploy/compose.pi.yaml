@@ -1,0 +1,8 @@
+# Merge with compose.yaml. Build on the workstation; start on the Pi with --no-build.
+services:
+  api:
+    image: ${VAULT_API_IMAGE:?Set the imported ARM64 API image tag}
+    platform: linux/arm64
+  proxy:
+    image: ${VAULT_PROXY_IMAGE:?Set the imported ARM64 proxy image tag}
+    platform: linux/arm64

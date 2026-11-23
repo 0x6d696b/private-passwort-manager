@@ -1,0 +1,24 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -139,8 +139,8 @@
+ version = "0.10"
+ 
+ [dependencies.rsa]
+-version = "0.10.0-rc.18"
+-features = ["sha2"]
++version = "=0.10.0"
++features = ["pkcs1v15"]
+ 
+ [dependencies.sec1]
+ version = "0.8.1"
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -502,7 +502,7 @@
+ 
+ pub mod rsa {
+     use rsa::pkcs1v15::{Signature, SigningKey, VerifyingKey};
+-    use rsa::{RsaPrivateKey, RsaPublicKey};
++    use rsa::{PrivateKey as RsaPrivateKey, PublicKey as RsaPublicKey};
+ 
+     pub use rand;
+     pub use rsa::BoxedUint as BigUint;

@@ -1,0 +1,11 @@
+{
+  "name": "private-vault-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {"libsodium-wrappers-sumo": "0.8.4"},
+  "engines": {"node": ">=20"}
+}

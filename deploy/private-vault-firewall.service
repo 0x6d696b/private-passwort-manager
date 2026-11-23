@@ -1,0 +1,13 @@
+[Unit]
+Description=Private Vault Pi HTTPS source restriction
+Before=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/private-vault-firewall apply
+ExecReload=/usr/local/sbin/private-vault-firewall apply
+RemainAfterExit=yes
+# No ExecStop: stopping the unit must not silently remove the firewall.
+
+[Install]
+WantedBy=multi-user.target

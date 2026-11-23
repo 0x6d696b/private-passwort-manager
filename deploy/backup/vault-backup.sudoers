@@ -1,0 +1,2 @@
+# The empty argument string forbids all command-line arguments.
+vault-backup ALL=(root) NOPASSWD: /usr/local/sbin/private-vault-snapshot ""

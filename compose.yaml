@@ -1,0 +1,70 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      args:
+        RUST_IMAGE: ${RUST_IMAGE:?Set a reviewed Rust bookworm image with sha256 digest}
+        RUNTIME_IMAGE: ${RUNTIME_IMAGE:?Set a reviewed Debian bookworm-slim image with sha256 digest}
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 1
+    init: true
+    restart: unless-stopped
+    environment:
+      VAULT_DATABASE: /data/vault.sqlite
+      VAULT_ORIGIN: https://${VAULT_HOST:?Set the private DNS hostname}
+      VAULT_RP_ID: ${VAULT_HOST}
+      VAULT_BIND: 172.28.93.2:8080
+    volumes:
+      - vault_data:/data
+    tmpfs:
+      - /tmp:size=160m,mode=1777
+    networks:
+      backend:
+        ipv4_address: 172.28.93.2
+  proxy:
+    build:
+      context: .
+      dockerfile: deploy/Caddy.Dockerfile
+      args:
+        CADDY_IMAGE: ${CADDY_IMAGE:?Set a reviewed Caddy image with sha256 digest}
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 192m
+    cpus: 1
+    restart: unless-stopped
+    ports:
+      - "${VAULT_LAN_IP:?Set a specific private host interface}:443:8443/tcp"
+    environment:
+      VAULT_HOST: ${VAULT_HOST}
+      XDG_DATA_HOME: /data
+      XDG_CONFIG_HOME: /config
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    networks:
+      backend:
+        ipv4_address: 172.28.93.3
+      edge: {}
+networks:
+  edge:
+    driver: bridge
+  backend:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.28.93.0/29
+volumes:
+  vault_data:
+  caddy_data:
+  caddy_config:

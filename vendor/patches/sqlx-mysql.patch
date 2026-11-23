@@ -1,0 +1,42 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -140,7 +140,7 @@
+ default-features = false
+ 
+ [dependencies.rsa]
+-version = "0.9"
++version = "=0.10.0"
+ 
+ [dependencies.rust_decimal]
+ version = "1.26.1"
+@@ -236,3 +236,8 @@
+ cast_possible_wrap = "deny"
+ cast_sign_loss = "deny"
+ disallowed_methods = "deny"
++
++# Keep the authentication OAEP SHA-1 digest compatible with RSA 0.10.
++[dependencies.rsa-sha1]
++package = "sha1"
++version = "0.11"
+--- a/src/connection/auth.rs
++++ b/src/connection/auth.rs
+@@ -2,8 +2,7 @@
+ use bytes::Bytes;
+ use digest::{Digest, OutputSizeUser};
+ use generic_array::GenericArray;
+-use rand::thread_rng;
+-use rsa::{pkcs8::DecodePublicKey, Oaep, RsaPublicKey};
++use rsa::{pkcs8::DecodePublicKey, PublicKey as RsaPublicKey};
+ use sha1::Sha1;
+ use sha2::Sha256;
+ 
+@@ -162,8 +161,7 @@
+ 
+     // client sends an RSA encrypted password
+     let pkey = parse_rsa_pub_key(rsa_pub_key)?;
+-    let padding = Oaep::new::<sha1::Sha1>();
+-    pkey.encrypt(&mut thread_rng(), padding, &pass[..])
++    pkey.oaep_encrypt::<rsa_sha1::Sha1>(&pass[..])
+         .map_err(Error::protocol)
+ }
+ 

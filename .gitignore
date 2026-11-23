@@ -1,0 +1,35 @@
+/target/
+/data/
+.env
+*.sqlite*
+*.db*
+*.lock
+!Cargo.lock
+__pycache__/
+*.pyc
+
+/.validation/
+
+/.env.pi
+
+/client/node_modules/
+/client/dist/
+
+# Host-specific configuration and private operational notes
+.env.*
+!.env.example
+!.env.pi.example
+/OPERATIONS.local.md
+/deploy/firewall.local.env
+/venv/
+/.venv/
+.DS_Store
+# Credentials, certificates, tokens, and collected artifacts
+*.age
+*.checkpoint.json
+*.token
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
