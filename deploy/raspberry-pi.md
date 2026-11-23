@@ -1,5 +1,7 @@
 # Raspberry Pi Deployment
 
+For automatic builds and deployment from `main` with the existing containerized Jenkins controller, see [Jenkins CI/CD setup](jenkins.md). That optional path builds on a dedicated Pi host agent; the workstation image-transfer procedure below remains available for manual deployment.
+
 All hostnames, addresses, paths, and router details below are examples. Substitute your own private values; keep them in ignored `.env.pi` and the installed root-owned firewall configuration. Updating these examples does not change an existing deployment.
 
 Target: Raspberry Pi 4, 4 GB RAM, ARM64 Debian 13. Docker and Compose are already installed. This guide stages the backend on loopback first. It does not open LAN access or provision real vault credentials.

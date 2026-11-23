@@ -21,6 +21,8 @@ The age recovery passphrase decrypts backups. The **vault master password** decr
 
 ## Everyday commands
 
+For automatic deployment of `main` using the existing Jenkins controller, follow [Jenkins setup](deploy/jenkins.md). The dedicated Pi agent tests and builds before stopping the API, migrates while stopped, then recreates containers and verifies HTTPS. Named volumes are preserved. After deployment, update `.env.pi` image tags to the successful commit before using manual `up` commands. Jenkins/Pi execution remains to be verified on the installation.
+
 **Pi:** run from the repository; define this shortcut in each new terminal:
 
 ```sh
