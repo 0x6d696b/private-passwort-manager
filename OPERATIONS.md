@@ -4,7 +4,7 @@
 
 ## Access and important locations
 
-Open **https://vault.home.arpa/** on your home network. Example server: **192.168.50.10**. VPN access is not configured yet.
+Open **https://vault.home.arpa/** on your home network. Example server: **192.168.50.10**. Remote access uses the router’s WireGuard VPN; connect the tunnel before opening the vault.
 
 | Location | What it contains |
 | --- | --- |
@@ -57,6 +57,16 @@ open "$HOME/Library/Application Support/PrivateVaultBackups/archive"
 ```
 
 Backups run hourly while logged in and awake, with LAN access. Checks warn when a backup is over 24 hours old. The archive has a 5 GiB soft budget; nothing is automatically deleted. For setup, updates, or removal, see [Mac backups](deploy/mac-backups.md). Scheduled jobs currently depend on the repository's `venv/bin/python3`; preserve that environment or prepare/reinstall the jobs with another interpreter.
+
+## Remote access through WireGuard
+
+The verified setup uses the router’s WireGuard server and a separate Mac profile. From outside home, connect the Mac to the internet, activate its WireGuard tunnel, then open the vault using its existing private hostname. Passkey sign-in and the vault master password are still required.
+
+The connection was tested from a phone hotspot with a successful handshake and vault access. With DS-Lite at home, the remote network needs working IPv6; IPv4-only networks cannot reach this VPN endpoint directly. MyFRITZ! supplies the router endpoint name. No public HTTPS forwarding to the vault is needed.
+
+If access fails, check the WireGuard handshake first, then private DNS and HTTPS reachability. Keep the Pi firewall restrictions in place. A successful tunnel is not a reason to open port 443 to the internet.
+
+Create a separate WireGuard profile for each device. Configuration files and QR codes contain private keys: keep them outside Git and revoke the router’s corresponding profile if a device is lost. A newly configured device also needs to trust the verified public vault HTTPS root CA. The vault’s URL/RP ID must remain stable for existing passkeys.
 
 ## Reinstall on another machine
 
